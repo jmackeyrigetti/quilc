@@ -134,7 +134,7 @@ Returns a list of link indices, along with an updated list of rewirings tried.")
 Returns two values: a list of links, and an updated list of rewirings tried."
   (with-slots (lschedule initial-l2p working-l2p chip-sched chip-spec qq-distances)
       state
-    (format-noise "SELECT-AND-EMBED-A-PERMUTATION: entering SWAP selection phase.")
+    (format-noise "SELECT-SWAP-LINKS: entering SWAP selection phase.")
     (let ((gates-in-waiting (assign-weights-to-gates state)))
       (select-swaps-for-gates *addresser-swap-search-type*
                               working-l2p
