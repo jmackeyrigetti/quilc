@@ -212,8 +212,6 @@
                                          chip-spec
                                        &allow-other-keys)
   (declare (ignore initargs))
-  (setf (addresser-state-1q-queues instance)
-        (make-array (chip-spec-n-qubits chip-spec) :initial-element (list)))
   ;; set up the qq-distances slot to use runtime as the basic unit
   (setf (addresser-state-qq-distances instance)
         (compute-qubit-qubit-distances

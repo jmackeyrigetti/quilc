@@ -61,7 +61,8 @@
                                                           #'>
                                                           :key #'length)
           (addresser-state-chip-schedule instance) (make-chip-schedule chip-spec)
-          (addresser-state-chip-specification instance) chip-spec)))
+          (addresser-state-chip-specification instance) chip-spec
+          (addresser-state-1q-queues instance) (make-array (chip-spec-n-qubits chip-spec) :initial-element (list)))))
 
 ;;; Generics that should be specialized by different addressers
 
