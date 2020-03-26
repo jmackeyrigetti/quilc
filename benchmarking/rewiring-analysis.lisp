@@ -409,8 +409,7 @@
       (quil::*initial-rewiring-default-type*
        quil::*addresser-swap-search-type*
        quil::*addresser-move-to-rewiring-swap-search-type*
-       quil::*addresser-a*-swap-search-heuristic-scale*
-       quil::*addresser-use-2q-tiers*)
+       quil::*addresser-a*-swap-search-heuristic-scale*)
     :control (:random  :greedy-qubit :greedy-qubit 1d0 nil)
     :naive   (:naive   :greedy-qubit :greedy-qubit 1d0 nil)
     :partial (:partial :greedy-qubit :greedy-qubit 1d0 nil)
