@@ -158,7 +158,7 @@
 
 (defparameter *fidelity-1q-descaling* 1/10)
 
-(defmethod unscheduled-gate-weights ((state fidelity-addresser-state))
+(defmethod weighted-future-gates ((state fidelity-addresser-state))
   (flet ((weight-bumper (instr value)
            (cond
              ((typep instr 'gate-application)
@@ -217,6 +217,6 @@
            (setf (gethash hw (fidelity-addresser-state-cost-bounds instance))
                  (fidelity-cost-value
                   (cost-function instance
-                                 :gate-weights (unscheduled-gate-weights instance))))))
+                                 :gate-weights (weighted-future-gates instance))))))
     (warm-up-addresser-state instance #'fill-cost-bound)))
 

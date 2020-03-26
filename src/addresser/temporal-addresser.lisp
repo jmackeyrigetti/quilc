@@ -188,7 +188,7 @@
   (make-temporal-cost :start-time most-positive-fixnum
                       :heuristic-value most-positive-fixnum))
 
-(defmethod unscheduled-gate-weights ((state temporal-addresser-state))
+(defmethod weighted-future-gates ((state temporal-addresser-state))
   (with-slots (lschedule) state
     (flet
         ((2q-application-p (instr)
@@ -234,5 +234,5 @@
   (flet ((fill-cost-bound (hw)
            (setf (gethash hw (temporal-addresser-state-cost-bounds instance))
                  (temporal-cost-heuristic-value
-                  (cost-function instance :gate-weights (unscheduled-gate-weights instance))))))
+                  (cost-function instance :gate-weights (weighted-future-gates instance))))))
     (warm-up-addresser-state instance #'fill-cost-bound)))

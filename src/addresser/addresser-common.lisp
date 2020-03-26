@@ -127,7 +127,7 @@ Returns two values: a list of links, and an updated list of rewirings tried."
   (with-slots (working-l2p chip-sched chip-spec)
       state
     (format-noise "SELECT-SWAP-LINKS: entering SWAP selection phase.")
-    (let ((gates-in-waiting (unscheduled-gate-weights state)))
+    (let ((gates-in-waiting (weighted-future-gates state)))
       (select-swaps-for-gates *addresser-swap-search-type*
                               working-l2p
                               gates-in-waiting
@@ -604,7 +604,7 @@ If DRY-RUN, this returns T as soon as it finds an instruction it can handle."
   "Attempt to assign a logical qubit from INSTRS to a physical qubit, as managed by the addresser state STATE."
   (with-slots (working-l2p) state
     (let ((unassigned-qubits (unassigned-qubits instrs working-l2p))
-          (gate-weights (unscheduled-gate-weights state)))
+          (gate-weights (weighted-future-gates state)))
       (flet ((placement-data (logical-qubit)
                "Given a LOGICAL-QUBIT, determine an assigned physical qubit, and the associated cost. Return a list of all three."
                (multiple-value-bind (physical-qubit cost)

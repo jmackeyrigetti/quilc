@@ -75,8 +75,8 @@
 ;;; other hand, we do not at present wish to suppose exactly what this looks
 ;;; like.
 
-(defgeneric unscheduled-gate-weights (state)
-  (:documentation "Collect unscheduled gates, along with their weights.
+(defgeneric weighted-future-gates (state)
+  (:documentation "Collect gates from the logical schedule, along with weights which indicate how far into the future the gate occurs.
 
 Returns a hash mapping gates from the logical schedule to numeric values."))
 
