@@ -50,6 +50,18 @@
 (defparameter *cost-fn-dist-decay* 0.5
   "Describes the rate of decay of instruction importance vs. number of SWAPs required before this instruction is actionable.")
 
+(defun nearest-unassigned-qubit (p0 rewiring qq-distances)
+  "Get the unassigned (relative to REWIRING) qubit with minimum distance to physical qubit P0."
+  (loop :with min-p    := nil
+        :with min-dist := double-float-positive-infinity
+        :for p :below (rewiring-length rewiring)
+        :unless (apply-rewiring-p2l rewiring p)
+          :do (let ((new-dist (aref qq-distances p0 p)))
+                (when (< new-dist min-dist)
+                  (setf min-p    p
+                        min-dist new-dist)))
+        :finally (return min-p)))
+
 (defun application-temporal-cost (state instr)
   "Compute the temporal cost of INSTR, with respect to the provided addresser state."
 
@@ -98,7 +110,7 @@
         time))))
 
 (defun gate-weights-temporal-cost (state gate-weights)
-  "Compute the total cost of gates in GATE-WEIGHTS, with the cost of individual gates discounted by tier."
+  "Compute the total cost of gates in GATE-WEIGHTS, with the cost of individual gates discounted by their 'tier'."
   ;; In other words: GATE-WEIGHTS is a hash table mapping gates to their numeric
   ;; 'tiers'. We iterate through them, greedily assigning physical qubits when
   ;; need be, and for each such assignment we tally an "exponentially
@@ -109,18 +121,7 @@
         (assigned-qubits nil)
         (gate-count 0)
         (actual-cost 0))
-    (flet ((min-dist-partner (p0)
-             "Get the unassigned qubit with minimum distance to physical qubit P0."
-             (loop :with min-p    := nil
-                   :with min-dist := double-float-positive-infinity
-                   :for p :below (rewiring-length rewiring)
-                   :unless (apply-rewiring-p2l rewiring p)
-                     :do (let ((new-dist (aref qq-distances p0 p)))
-                           (when (< new-dist min-dist)
-                             (setf min-p    p
-                                   min-dist new-dist)))
-                   :finally (return min-p))))
-      (dohash ((gate tier-index) gate-weights)
+    (dohash ((gate tier-index) gate-weights)
         (when (and (< tier-index 3)
                    (typep gate 'application)
                    (= 2 (length (application-arguments gate))))
@@ -134,7 +135,7 @@
                 ;; otherwise at least one is assigned
                 (unless p1
                   ;; find a position for the other qubit
-                  (setf p1 (min-dist-partner p0))
+                  (setf p1 (nearest-unassigned-qubit p0 rewiring qq-distances))
                   (push q1 assigned-qubits)
                   (rewiring-assign rewiring q1 p1))
                 (let ((qq-distance (aref qq-distances p0 p1)))
@@ -149,10 +150,11 @@
                          ~A ."
                           (print-instruction gate nil))
                   (incf gate-count)
-                  (incf actual-cost (* (expt *cost-fn-tier-decay* tier-index) qq-distance)))))))))
-        ;; clean up the rewiring
-        (dolist (qubit assigned-qubits) (rewiring-unassign rewiring qubit))
-        ;; normalize actual-cost
+                  (incf actual-cost (* (expt *cost-fn-tier-decay* tier-index) qq-distance))))))))
+    ;; clean up the rewiring
+    (dolist (qubit assigned-qubits)
+      (rewiring-unassign rewiring qubit))
+    ;; normalize actual-cost
     (if (zerop gate-count)
         0d0
         (/ actual-cost gate-count))))
