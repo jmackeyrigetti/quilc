@@ -97,7 +97,7 @@
           (setf time (min time intelligent-bound)))
         time))))
 
-(defun gate-weight-temporal-cost (state gate-weights)
+(defun gate-weights-temporal-cost (state gate-weights)
   "Compute the total cost of gates in GATE-WEIGHTS, with the cost of individual gates discounted by tier."
   ;; In other words: GATE-WEIGHTS is a hash table mapping gates to their numeric
   ;; 'tiers'. We iterate through them, greedily assigning physical qubits when
