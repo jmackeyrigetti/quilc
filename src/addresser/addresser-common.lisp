@@ -56,7 +56,7 @@
 ;;; different methods will invoke these guts after binding particular behaviors
 ;;; to various hooks.
 ;;;
-;;; See DO-GREEDY-TEMPORAL-ADDRESSING below for the main entry point.
+;;; See DO-GREEDY-ADDRESSING below for the main entry point.
 
 (defvar *addresser-max-swap-sequence-length* 1000
   "Controls the maximum number of swaps that can occur in a row.")
