@@ -27,7 +27,7 @@
   (fidelity-cost-value cost))
 
 (defun application-fidelity-cost (state instr)
-  "Compute the fidelity cost of INSTR, withr respect to the provided addresser state."
+  "Compute the fidelity cost of INSTR, with respect to the provided addresser state."
   ;; calculate log-infidelity coming from INSTR, using recombination:
   ;;   + calculate the cut point
   ;;   + calculate the infidelity of instructions since the cut point
