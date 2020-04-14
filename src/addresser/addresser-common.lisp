@@ -93,10 +93,10 @@ Returns a list of link indices, along with an updated list of rewirings tried.")
 ;;;   - path-heuristic (for GREEDY-PATH)
 (deftype addresser-search-type () '(member :a* :greedy-qubit :greedy-path))
 
-(defvar *addresser-swap-search-type* ':greedy-qubit
+(defvar *addresser-gates-swap-search-type* ':greedy-qubit
   "The type of swap search the addresser should use when selecting gates.")
 
-(defvar *addresser-move-to-rewiring-swap-search-type* ':a*
+(defvar *addresser-rewiring-swap-search-type* ':a*
   "The type of swap search the addresser should use when doing move-to-rewiring.")
 
 ;;; A pseudoinstruction class used to send directives to the addresser
@@ -128,7 +128,7 @@ Returns two values: a list of links, and an updated list of rewirings tried."
       state
     (format-noise "SELECT-SWAP-LINKS: entering SWAP selection phase.")
     (let ((gates-in-waiting (weighted-future-gates state)))
-      (select-swaps-for-gates *addresser-swap-search-type*
+      (select-swaps-for-gates *addresser-gates-swap-search-type*
                               working-l2p
                               gates-in-waiting
                               state
@@ -153,7 +153,7 @@ Returns two values: a list of links, and an updated list of rewirings tried."
             :do (assert (> *addresser-max-swap-sequence-length* (length rewirings-tried)) ()
                         "Too many rewirings tried: ~a" (length rewirings-tried))
             :do (let ((links (select-swaps-for-rewiring
-                              *addresser-move-to-rewiring-swap-search-type*
+                              *addresser-rewiring-swap-search-type*
                               rewiring target-rewiring addresser-state rewirings-tried)))
                   (dolist (link-index links)
                     (embed-swap link-index

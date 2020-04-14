@@ -73,23 +73,22 @@ following two generics
   update the current rewiring to a desired rewiring.
 
 These represent the two main pieces of functionality needed to add a new search
-heuristic to the addresser. Currently they dispatch on the search type (a
-keyword symbol) and take the full addresser state as an argument.
+heuristic to the addresser.
 
-We currently have three implementations (cf. `path-heuristic.lisp`, `qubit-heuristic.lisp`, and `astar-rewiring-search.lisp`). Defaults are specified by this snippet from `addresser-common.lisp`:
+The search type is represented as a keyword symbol, 
 ```
-;;; Search routines are implemented in
-;;;   - astar-rewiring-search.lisp (for A*)
-;;;   - qubit-heuristic.lisp (for GREEDY-QUBIT)
-;;;   - path-heuristic (for GREEDY-PATH)
 (deftype addresser-search-type () '(member :a* :greedy-qubit :greedy-path))
-
-(defvar *addresser-swap-search-type* ':greedy-qubit
-  "The type of swap search the addresser should use.")
-
-(defvar *addresser-move-to-rewiring-swap-search-type* ':a*
-  "The type of swap search the addresser should use when doing move-to-rewiring.")
 ```
+in `addresser-common.lisp`,
+corresponding to three implementations
+- `:GREEDY-PATH` in `path-heuristic.lisp`,
+- `:GREEDY-QUBIT` in `qubit-heuristic.lisp`, 
+- `:A*`in `astar-rewiring-search.lisp`.
+
+The default type may be customized (cf. `addresser-common.lisp`):
+- `*addresser-gates-swap-search-type*` specifies the default type for `SELECT-SWAP-FOR-GATES`,
+- `*addresser-rewiring-swap-search-type*` specifies the default type for `SELECT-SWAPS-FOR-REWIRING`.
+
 
 ## Additional Customization
 
